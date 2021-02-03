@@ -8,6 +8,7 @@ FILE_EXTENSIONS = (".mp3", ".wav", ".m4a", ".flac")
 dir_struct = {}
 pass_list = []
 
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Music library sorter')
     parser.add_argument(
@@ -16,22 +17,35 @@ def parse_args():
     )
     return parser.parse_args()
 
+def sort_by_regex(file):
+    pattern = re.compile(r"(?P<artist>.+) - (?P<title>.+)\..+")
+    
+    match = re.match(pattern, file)
+    if match is None:
+        pass_list.append(file)
+        return False
+    else:
+        if match.group("artist") not in dir_struct:
+            dir_struct[match.group("artist")] = {}
+        dir_struct[match.group("artist")][file] = match.group("title")
+        return True
+    
+
+def validate_file(filename):
+    if not filename.endswith(FILE_EXTENSIONS):
+        pass_list.append(filename)
+        return False
+    return True
 
 def main():
-    pattern = re.compile(r"(.+) - (.+)\..+")
     args = parse_args()
 
-    for filename in os.listdir(args.library):
-        if not filename.endswith(FILE_EXTENSIONS):
-            continue
+    files = os.listdir(args.library)
+    filtered_files = filter(validate_file, files)
 
-        match = re.match(pattern, filename)
-        if match is None:
-            pass_list.append(filename)
-        else:
-            if match.group(1) not in dir_struct:
-                dir_struct[match.group(1)] = {}
-            dir_struct[match.group(1)][match.group(2)] = filename
+    result = map(sort_by_regex, filtered_files)
+
+    pprint.pprint(dir_struct)
 
 if __name__ == "__main__":
     main()
