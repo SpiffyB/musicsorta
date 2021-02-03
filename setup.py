@@ -17,7 +17,7 @@ setup(
     description='Sort and organise music libraries',
     long_description=readme,
     author='Tom MacArthur',
-    url='https://github.com/kennethreitz/samplemod',
+    url='',
     license=license,
     packages=find_packages(exclude=('tests', 'docs'))
 )
