@@ -2,6 +2,7 @@ import re
 import argparse
 import os
 import pprint
+import mutagen
 
 FILE_EXTENSIONS = (".mp3", ".wav", ".m4a", ".flac")
 
@@ -43,9 +44,11 @@ def main():
     files = os.listdir(args.library)
     filtered_files = filter(validate_file, files)
 
-    result = map(sort_by_regex, filtered_files)
+    for song in filtered_files:
+        sort_by_regex(song)
 
     pprint.pprint(dir_struct)
+    pprint.pprint(pass_list)
 
 if __name__ == "__main__":
     main()
